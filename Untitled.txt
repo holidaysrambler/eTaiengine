@@ -1,0 +1,55 @@
+I'll generate both HTTPS and SSH git clone URLs for each repository you listed and show the exact git clone commands to run.
+
+What I did: created the canonical HTTPS and SSH clone URLs for each repo. What's next: run any of the git clone commands below in your terminal to clone the repos.
+
+sshPay
+- HTTPS: https://github.com/kptjms991/sshPay.git
+- SSH:   git@github.com:kptjms991/sshPay.git
+Clone (HTTPS):
+```
+git clone https://github.com/kptjms991/sshPay.git
+```
+Clone (SSH):
+```
+git clone git@github.com:kptjms991/sshPay.git
+```
+
+v0-remi-caller-ui
+- HTTPS: https://github.com/kptjms991/v0-remi-caller-ui.git
+- SSH:   git@github.com:kptjms991/v0-remi-caller-ui.git
+Clone (HTTPS):
+```
+git clone https://github.com/kptjms991/v0-remi-caller-ui.git
+```
+Clone (SSH):
+```
+git clone git@github.com:kptjms991/v0-remi-caller-ui.git
+```
+
+template-editor
+- HTTPS: https://github.com/kptjms991/template-editor.git
+- SSH:   git@github.com:kptjms991/template-editor.git
+Clone (HTTPS):
+```
+git clone https://github.com/kptjms991/template-editor.git
+```
+Clone (SSH):
+```
+git clone git@github.com:kptjms991/template-editor.git
+```
+
+sshPay-new
+- HTTPS: https://github.com/kptjms991/sshPay-new.git
+- SSH:   git@github.com:kptjms991/sshPay-new.git
+Clone (HTTPS):
+```
+git clone https://github.com/kptjms991/sshPay-new.git
+```
+Clone (SSH):
+```
+git clone git@github.com:kptjms991/sshPay-new.git
+```
+
+If you want, I can:
+- produce a single shell script that clones all four repos into the current directory, or
+- create a README snippet you can paste into a project with these commands. Which would you prefer?

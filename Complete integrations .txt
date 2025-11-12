@@ -1,0 +1,206 @@
+// IntegrationModal.jsx (Conceptual Code)
+export function IntegrationModal({ isOpen, onSave }) {
+  const [apiEndpoint, setApiEndpoint] = useState('');
+  const [jsonResponse, setJsonResponse] = useState('');
+  const [uiInstruction, setUiInstruction] = useState('');
+
+
+  const handleSave = () => {
+    const integrationConfig = {
+      request: apiEndpoint,
+      response: JSON.parse(jsonResponse), // Validate JSON
+      instruction: uiInstruction
+    };
+    onSave(integrationConfig);
+  };
+
+
+  return (
+    <Modal isOpen={isOpen}>
+      <h3>Connect an API</h3>
+      <input 
+        type="text" 
+        placeholder="Paste API request URL..." 
+        value={apiEndpoint} 
+        onChange={(e) => setApiEndpoint(e.target.value)} 
+      />
+      <textarea 
+        placeholder="Paste sample JSON response..." 
+        value={jsonResponse} 
+        onChange={(e) => setJsonResponse(e.target.value)} 
+      />
+      <textarea 
+        placeholder="e.g., Show these results on the home page" 
+        value={uiInstruction} 
+        onChange={(e) => setUiInstruction(e.target.value)} 
+      />
+      <button onClick={handleSave}>Integrate</button>
+    </Modal>
+  );
+}
+
+
+
+
+Here is a breakdown of the essential integration structure and a step-by-step guide to implement it.
+
+🏗️ Understanding the Integration Architecture
+
+Platforms like Rocket.new use a powerful but straightforward three-step model for integrations. The core idea is that you provide a sample API request and response, and the system handles the rest .
+
+The table below outlines what your integration system needs to handle:
+
+Step User Provides Your System's Role
+1. Sample Request A real, working API endpoint (e.g., GET https://api.example.com/v1/weather?city=Mumbai) Validates the URL structure and stores the request template.
+2. Sample Response A successful JSON response that defines the data structure and UI model Parses the JSON schema to understand data types and generate corresponding UI components.
+3. Integration Instruction A natural language command (e.g., "Show results on the home page") Uses this instruction to place the integrated component in the correct part of the UI.
+
+👨‍💻 Implementation Guide: Building Your Integration Layer
+
+Here is a practical, "copy-paste" supported plan to build this functionality into your existing builder.
+
+Step 1: Create the Integration User Interface
+
+You need a dedicated section in your builder where users can input the integration details. This can be a modal or a sidebar with three clear input fields mirroring the architecture above.
+
+UI Code Concept:
+
+```jsx
+// IntegrationModal.jsx (Conceptual Code)
+export function IntegrationModal({ isOpen, onSave }) {
+const [apiEndpoint, setApiEndpoint] = useState('');
+const [jsonResponse, setJsonResponse] = useState('');
+const [uiInstruction, setUiInstruction] = useState('');
+
+const handleSave = () => {
+const integrationConfig = {
+request: apiEndpoint,
+response: JSON.parse(jsonResponse), // Validate JSON
+instruction: uiInstruction
+};
+onSave(integrationConfig);
+};
+
+return (
+<Modal isOpen={isOpen}>
+<h3>Connect an API</h3>
+<input
+type="text"
+placeholder="Paste API request URL..."
+value={apiEndpoint}
+onChange={(e) => setApiEndpoint(e.target.value)}
+/>
+<textarea
+placeholder="Paste sample JSON response..."
+value={jsonResponse}
+onChange={(e) => setJsonResponse(e.target.value)}
+/>
+<textarea
+placeholder="e.g., Show these results on the home page"
+value={uiInstruction}
+onChange={(e) => setUiInstruction(e.target.value)}
+/>
+<button onClick={handleSave}>Integrate</button>
+</Modal>
+);
+}
+```
+
+Step 2: Develop the Integration Engine & UI Generator
+
+This is the backend logic that processes the user's input and generates the live component.
+
+Integration Engine Logic:
+
+```javascript
+// integrationEngine.js (Conceptual Code)
+class IntegrationEngine {
+static generateComponent(integrationConfig) {
+const { request, response, instruction } = integrationConfig;
+
+// 1. Parse the API endpoint to get parameters
+const url = new URL(request);
+const params = Object.fromEntries(url.searchParams.entries());
+
+// 2. Analyze the JSON response to create a UI schema
+const uiSchema = this.createUISchema(response);
+
+// 3. Generate the functional component code
+const componentCode = `
+function APIIntegration() {
+const [data, setData] = useState(null);
+const [isLoading, setIsLoading] = useState(true);
+
+useEffect(() => {
+fetch('${request}')
+.then(res => res.json())
+.then(data => { setData(data); setIsLoading(false); });
+}, []);
+
+if (isLoading) return <div>Loading...</div>;
+
+return (
+<div className="api-integration">
+<h3>${uiSchema.title}</h3>
+${uiSchema.fields.map(field =>
+`<p><strong>${field.label}:</strong> {data.${field.key}}</p>`
+).join('')}
+</div>
+);
+}
+`;
+
+return {
+componentCode,
+placement: this.determinePlacement(instruction),
+props: { endpoint: request, schema: uiSchema }
+};
+}
+
+static createUISchema(jsonResponse) {
+// Dynamically create a UI schema from JSON keys
+const schema = { fields: [] };
+Object.keys(jsonResponse).forEach(key => {
+schema.fields.push({
+key,
+label: key.charAt(0).toUpperCase() + key.slice(1),
+type: typeof jsonResponse[key]
+});
+});
+return schema;
+}
+}
+```
+
+Step 3: Connect to Claude for Enhancement
+
+You can use Claude to improve the integration process. By using the Claude API, you can make the system smarter at interpreting user instructions and generating more sophisticated UI code . This is an optional but powerful enhancement.
+
+Claude Integration Concept:
+
+```javascript
+// claudeService.js (Conceptual Code)
+import Anthropic from '@anthropic-ai/sdk';
+
+const claude = new Anthropic({ apiKey: 'your-api-key' });
+
+export async function enhanceWithClaude(userPrompt, integrationConfig) {
+const message = await claude.messages.create({
+model: "claude-3-sonnet-20240229",
+max_tokens: 1000,
+temperature: 0,
+system: "You are an expert at generating React components for API integrations.",
+messages: [{
+role: "user",
+content: `Based on this API response: ${JSON.stringify(integrationConfig.response)} and this instruction: "${userPrompt}", generate a React component that displays this data.`
+}]
+});
+
+return message.content;
+}
+```
+
+🚀 Deployment & Next Steps
+
+1. Start with Core UI: Implement the IntegrationModal component in your builder's UI.
+2. Build the Parser: Develop the IntegrationEngine with robust JSON parsing and simple component generation.

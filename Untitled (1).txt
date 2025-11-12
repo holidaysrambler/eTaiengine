@@ -1,0 +1,15 @@
+Here are the git clone URLs for all three repositories you provided (HTTPS and SSH):
+
+- holidaysrambler/v0-smart-car-parking
+  - HTTPS: https://github.com/holidaysrambler/v0-smart-car-parking.git
+  - SSH: git@github.com:holidaysrambler/v0-smart-car-parking.git
+
+- holidaysrambler/template-flux-59
+  - HTTPS: https://github.com/holidaysrambler/template-flux-59.git
+  - SSH: git@github.com:holidaysrambler/template-flux-59.git
+
+- holidaysrambler/tynio-visionary-hub
+  - HTTPS: https://github.com/holidaysrambler/tynio-visionary-hub.git
+  - SSH: git@github.com:holidaysrambler/tynio-visionary-hub.git
+
+If you want these in a shell script to clone all of them at once, I can generate that for you.

@@ -1,0 +1,87 @@
+// lib/puterAI.ts - Puter AI API Integration with Keyless Support
+
+declare global {
+  interface Window {
+    puter?: {
+      ai?: {
+        chat: (prompt: string, options?: { model?: string }) => Promise<string>
+      }
+    }
+  }
+}
+
+export interface AIModel {
+  id: string
+  name: string
+  provider: string
+}
+
+export const availableModels: AIModel[] = [
+  { id: "claude-sonnet-4-5", name: "Claude 3.5 Sonnet", provider: "Anthropic" },
+  { id: "gemini-2.0-flash-exp", name: "Gemini 2.0 Flash", provider: "Google" },
+  { id: "mistral-large-latest", name: "Mistral Large", provider: "Mistral" },
+  { id: "llama-3.1-sonar-large-128k-online", name: "Perplexity Sonar Large", provider: "Perplexity" },
+]
+
+export function isPuterEnvironment(): boolean {
+  if (typeof window === "undefined") return false
+  return typeof window.puter !== "undefined" && typeof window.puter?.ai !== "undefined"
+}
+
+export async function generateUIWithPuter(prompt: string, model = "claude-sonnet-4-5"): Promise<string> {
+  if (!isPuterEnvironment()) {
+    console.warn("[v0] Puter API not available, using fallback generator")
+    return generateFallbackUI(prompt)
+  }
+
+  try {
+    const systemPrompt = `You are an expert UI/UX developer. Generate clean, modern React/Next.js code based on the user's description.
+Use Tailwind CSS for styling. Return ONLY the JSX code without explanations or markdown code blocks.
+Make it responsive, accessible, and beautiful with proper animations.`
+
+    const fullPrompt = `${systemPrompt}\n\nUser Request: ${prompt}\n\nGenerate the React component code:`
+
+    console.log("[v0] Calling Puter AI with model:", model)
+    const response = await window.puter!.ai!.chat(fullPrompt, { model })
+    console.log("[v0] Puter AI response received")
+
+    // Clean up the response
+    let code = response.trim()
+    code = code.replace(/```(jsx|tsx|javascript|typescript)?\n?/g, "")
+    code = code.replace(/```\n?$/g, "")
+
+    return code
+  } catch (error) {
+    console.error("[v0] Puter AI error:", error)
+    throw new Error(`AI generation failed: ${error instanceof Error ? error.message : "Unknown error"}`)
+  }
+}
+
+function generateFallbackUI(prompt: string): string {
+  return `export default function GeneratedComponent() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-8">
+      <div className="max-w-4xl w-full bg-white/10 backdrop-blur-lg rounded-3xl p-12 border border-white/20 shadow-2xl">
+        <h1 className="text-5xl font-bold text-white mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          ${prompt.slice(0, 50)}
+        </h1>
+        <p className="text-gray-200 text-lg mb-8">
+          This is a placeholder UI component. For full AI generation, please ensure the Puter API is loaded and available.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white/5 p-6 rounded-xl border border-purple-500/30 hover:bg-white/10 transition-all">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg mb-4" />
+              <h3 className="text-white font-bold mb-2">Feature {i}</h3>
+              <p className="text-gray-300 text-sm">Placeholder feature description</p>
+            </div>
+          ))}
+        </div>
+        <button className="mt-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform">
+          Get Started
+        </button>
+      </div>
+    </div>
+  )
+}`
+}

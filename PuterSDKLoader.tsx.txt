@@ -1,0 +1,43 @@
+"use client"
+
+import { useEffect } from "react"
+
+export function PuterSDKLoader() {
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    // Check if already loaded
+    if (window.puter) {
+      console.log("[v0] Puter SDK already loaded")
+      return
+    }
+
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src="https://js.puter.com/v2/"]')
+    if (existingScript) return
+
+    // Create and inject script
+    const script = document.createElement("script")
+    script.src = "https://js.puter.com/v2/"
+    script.async = true
+
+    script.onload = () => {
+      console.log("[v0] Puter SDK loaded successfully")
+    }
+
+    script.onerror = () => {
+      console.warn("[v0] Failed to load Puter SDK")
+    }
+
+    document.head.appendChild(script)
+
+    return () => {
+      // Cleanup on unmount
+      if (script.parentNode) {
+        script.parentNode.removeChild(script)
+      }
+    }
+  }, [])
+
+  return null
+}

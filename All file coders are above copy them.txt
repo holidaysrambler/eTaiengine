@@ -1,0 +1,1515 @@
+Okay, I understand. I will now provide all the code snippets again, organized by their file paths,
+making it easy for you to copy and paste them directly.
+
+Step 1: Install Dependencies
+
+First, ensure you have the necessary libraries installed in your project root:
+
+Bash
+
+npm install react react-dom framer-motion react-tsparticles tsparticles-slim
+@heroicons/react​
+# or​
+yarn add react react-dom framer-motion react-tsparticles tsparticles-slim @heroicons/react​
+
+Step 2: tailwind.config.js (Place in your project's root directory)
+
+JavaScript
+
+/** @type {import('tailwindcss').Config} */​
+module.exports = {​
+content: [​
+"./index.html",​
+"./src/**/*.{js,ts,jsx,tsx}",​
+
+],​
+theme: {​
+extend: {​
+fontFamily: {​
+'space-grotesk': ['"Space Grotesk"', 'sans-serif'],​
+'inter': ['Inter', 'sans-serif'],​
+
+},​
+colors: {​
+// Define your custom colors if needed, e.g.,​
+// 'purple-primary': '#9333EA',​
+// 'dark-bg': '#0F172A',​
+
+}​
+},​
+},​
+plugins: [],​
+
+}​
+
+Step 3: src/index.css (Or your main CSS file in src/)
+
+CSS
+
+@import 'tailwindcss/base';​
+@import 'tailwindcss/components';​
+@import 'tailwindcss/utilities';​
+
+​
+/* Google Fonts Imports */​
+@import
+
+url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grote
+sk:wght@300;400;500;600;700&display=swap');​
+​
+body {​
+margin: 0;​
+font-family: 'Inter', sans-serif;​
+-webkit-font-smoothing: antialiased;​
+-moz-osx-font-smoothing: grayscale;​
+background-color: #0F172A; /* Base background for the whole app */​
+color: #E2E8F0; /* Default text color */​
+}​
+​
+/* Optional: Scroll behavior for smooth scrolling when navigating to anchors */​
+html {​
+scroll-behavior: smooth;​
+
+}​
+​
+/* Ensure Framer Motion elements use their styles */​
+[data-framer-motion-component] {​
+transform: translateZ(0); /* Fix for potential Safari transform issues */​
+
+}​
+
+Step 4: src/components/ParticlesBackground.jsx
+
+JavaScript
+
+import React, { useCallback } from 'react';​
+import Particles from 'react-tsparticles';​
+import { loadSlim } from 'tsparticles-slim'; // loads tsparticles-slim​
+
+​
+const ParticlesBackground = () => {​
+const particlesInit = useCallback(async (engine) => {​
+await loadSlim(engine);​
+
+}, []);​
+​
+const particlesLoaded = useCallback(async (container) => {​
+// console.log("Particles loaded", container);​
+
+}, []);​
+​
+const particlesConfig = {​
+background: {​
+color: {​
+value: "transparent",​
+
+},​
+},​
+fpsLimit: 120,​
+interactivity: {​
+events: {​
+onClick: {​
+enable: false,​
+mode: "push",​
+
+},​
+onHover: {​
+enable: true,​
+mode: "grab",​
+parallax: {​
+enable: true,​
+force: 60,​
+smooth: 10,​
+
+},​
+},​
+resize: true,​
+
+},​
+modes: {​
+push: {​
+quantity: 4,​
+
+},​
+grab: {​
+distance: 150,​
+links: {​
+opacity: 0.2,​
+
+},​
+},​
+},​
+},​
+particles: {​
+color: {​
+value: "#ffffff",​
+animation: {​
+enable: true,​
+speed: 20,​
+sync: false,​
+startValue: "random",​
+count: 1,​
+destroy: "none"​
+
+}​
+},​
+links: {​
+color: "#9333EA",​
+distance: 100,​
+enable: false,​
+opacity: 0.1,​
+width: 1,​
+
+},​
+
+move: {​
+direction: "none",​
+enable: true,​
+outModes: {​
+default: "bounce",​
+
+},​
+random: true,​
+speed: 0.3,​
+straight: false,​
+
+},​
+number: {​
+density: {​
+enable: true,​
+area: 800,​
+
+},​
+value: 80,​
+
+},​
+opacity: {​
+value: 0.5,​
+animation: {​
+enable: true,​
+speed: 1,​
+sync: false,​
+startValue: "random",​
+destroy: "none"​
+
+}​
+},​
+shape: {​
+type: "circle",​
+
+},​
+size: {​
+value: { min: 1, max: 3 },​
+animation: {​
+enable: true,​
+speed: 4,​
+minimumValue: 1,​
+sync: false,​
+startValue: "random",​
+destroy: "none"​
+
+}​
+},​
+},​
+detectRetina: true,​
+
+};​
+​
+return (​
+<div className="absolute inset-0 w-full h-full pointer-events-none">​
+<Particles​
+id="tsparticles"​
+init={particlesInit}​
+loaded={particlesLoaded}​
+options={particlesConfig}​
+/>​
+</div>​
+
+);​
+};​
+​
+export default ParticlesBackground;​
+
+Step 5: src/components/Header.jsx
+
+JavaScript
+
+import React, { useState } from 'react';​
+import { motion } from 'framer-motion';​
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'; // Using Heroicons v2​
+
+​
+const Header = () => {​
+const [isOpen, setIsOpen] = useState(false);​
+
+​
+const navLinks = [​
+
+{ name: 'Features', href: '#features' },​
+{ name: 'Pricing', href: '#pricing' },​
+{ name: 'Testimonials', href: '#testimonials' },​
+{ name: 'AI Builder', href: '#ai-builder' },​
+];​
+​
+const headerVariants = {​
+hidden: { y: -100, opacity: 0 },​
+
+visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 15, delay: 0.3 } },​
+
+};​
+​
+const mobileMenuVariants = {​
+closed: { x: "100%", opacity: 0, transition: { duration: 0.3 } },​
+open: { x: "0%", opacity: 1, transition: { duration: 0.3 } },​
+
+};​
+​
+const linkHoverVariants = {​
+hover: { scale: 1.05, color: "#a78bfa" }, // purple-300​
+tap: { scale: 0.95 },​
+
+};​
+​
+const buttonHoverVariants = {​
+hover: { scale: 1.03, boxShadow: "0 0 15px rgba(147, 51, 234, 0.6)" },​
+tap: { scale: 0.98 },​
+
+};​
+​
+return (​
+<motion.header​
+className="fixed w-full top-0 left-0 z-50 bg-[#0F172A]/80 backdrop-blur-sm shadow-lg
+border-b border-[#374151]"​
+variants={headerVariants}​
+initial="hidden"​
+animate="visible"​
+>​
+<div className="container mx-auto px-6 py-4 flex justify-between items-center">​
+{/* Logo */}​
+<motion.a​
+href="/"​
+className="text-3xl font-space-grotesk font-extrabold text-purple-400"​
+whileHover={{ scale: 1.05 }}​
+whileTap={{ scale: 0.95 }}​
+>​
+eT Builder​
+</motion.a>​
+​
+{/* Desktop Navigation */}​
+<nav className="hidden md:flex space-x-8 items-center">​
+{navLinks.map((link) => (​
+<motion.a​
+key={link.name}​
+href={link.href}​
+className="text-gray-300 hover:text-purple-300 transition-colors font-inter text-lg"​
+variants={linkHoverVariants}​
+
+whileHover="hover"​
+whileTap="tap"​
+>​
+{link.name}​
+</motion.a>​
+))}​
+<motion.button​
+className="bg-purple-600 text-white px-6 py-2 rounded-full font-bold transition-all
+duration-300 relative group overflow-hidden"​
+variants={buttonHoverVariants}​
+whileHover="hover"​
+whileTap="tap"​
+>​
+Get Started​
+<span className="absolute inset-0 bg-gradient-to-br from-purple-400 via-purple-600
+to-purple-800 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></span>​
+</motion.button>​
+</nav>​
+​
+{/* Mobile Menu Button */}​
+<div className="md:hidden flex items-center">​
+<button onClick={() => setIsOpen(!isOpen)} className="text-gray-300 focus:outline-none">​
+{isOpen ? (​
+<XMarkIcon className="h-8 w-8 text-purple-400" />​
+) : (​
+<Bars3Icon className="h-8 w-8 text-purple-400" />​
+)}​
+</button>​
+</div>​
+</div>​
+​
+{/* Mobile Menu Overlay */}​
+<motion.div​
+className="fixed top-0 right-0 h-full w-full bg-[#0F172A] p-6 shadow-xl md:hidden z-40"​
+initial="closed"​
+animate={isOpen ? "open" : "closed"}​
+variants={mobileMenuVariants}​
+>​
+<div className="flex justify-end mb-8">​
+<button onClick={() => setIsOpen(false)} className="text-gray-300 focus:outline-none">​
+<XMarkIcon className="h-8 w-8 text-purple-400" />​
+</button>​
+</div>​
+<nav className="flex flex-col space-y-6 text-xl">​
+{navLinks.map((link) => (​
+<motion.a​
+key={link.name}​
+href={link.href}​
+
+className="block text-gray-200 hover:text-purple-400 transition-colors font-inter py-2
+border-b border-gray-700"​
+onClick={() => setIsOpen(false)}​
+variants={linkHoverVariants}​
+whileHover="hover"​
+whileTap="tap"​
+>​
+{link.name}​
+</motion.a>​
+))}​
+<motion.button​
+className="mt-6 bg-purple-600 text-white px-6 py-3 rounded-full font-bold text-xl
+transition-all duration-300 relative group overflow-hidden"​
+variants={buttonHoverVariants}​
+whileHover="hover"​
+whileTap="tap"​
+>​
+Get Started​
+<span className="absolute inset-0 bg-gradient-to-br from-purple-400 via-purple-600
+to-purple-800 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></span>​
+</motion.button>​
+</nav>​
+</motion.div>​
+</motion.header>​
+
+);​
+};​
+​
+export default Header;​
+
+Step 6: src/components/HeroSection.jsx
+
+JavaScript
+
+import React from 'react';​
+import { motion } from 'framer-motion';​
+import ParticlesBackground from './ParticlesBackground'; // Make sure this path is correct​
+
+​
+const HeroSection = () => {​
+
+const containerVariants = {​
+hidden: { opacity: 0 },​
+visible: {​
+opacity: 1,​
+transition: {​
+staggerChildren: 0.2,​
+
+},​
+},​
+};​
+​
+const itemVariants = {​
+hidden: { y: 50, opacity: 0 },​
+visible: {​
+y: 0,​
+opacity: 1,​
+transition: {​
+type: "spring",​
+stiffness: 100,​
+damping: 15,​
+
+},​
+},​
+};​
+​
+const buttonHoverVariants = {​
+hover: { scale: 1.05, boxShadow: "0 0 25px rgba(147, 51, 234, 0.7)" },​
+tap: { scale: 0.95 },​
+
+};​
+​
+return (​
+<section id="hero" className="relative h-screen flex items-center justify-center text-white
+overflow-hidden bg-gradient-to-br from-[#0F172A] to-[#111827]">​
+<ParticlesBackground />​
+​
+<div className="relative z-10 text-center px-6">​
+<motion.div​
+variants={containerVariants}​
+initial="hidden"​
+animate="visible"​
+>​
+<motion.h1​
+className="text-5xl md:text-7xl font-extrabold font-space-grotesk mb-6 leading-tight"​
+variants={itemVariants}​
+>​
+Build Your Vision with <span className="text-purple-400 drop-shadow-lg">AI</span>​
+
+</motion.h1>​
+<motion.p​
+className="text-xl md:text-2xl text-gray-300 font-inter mb-10 max-w-3xl mx-auto
+leading-relaxed"​
+variants={itemVariants}​
+>​
+eT Builder empowers creators to design, prototype, and deploy stunning AI-powered
+applications with unprecedented speed and intelligence.​
+</motion.p>​
+<motion.div​
+className="flex flex-col sm:flex-row justify-center gap-6"​
+variants={itemVariants}​
+>​
+<motion.button​
+className="bg-purple-600 text-white px-8 py-4 rounded-full text-xl font-bold transition-all
+duration-300 relative group overflow-hidden"​
+variants={buttonHoverVariants}​
+whileHover="hover"​
+whileTap="tap"​
+>​
+Start Building Now​
+<span className="absolute inset-0 bg-gradient-to-br from-purple-400 via-purple-600
+to-purple-800 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></span>​
+</motion.button>​
+<motion.button​
+className="bg-gray-800 text-gray-200 border border-gray-700 px-8 py-4 rounded-full
+text-xl font-bold hover:border-purple-500 hover:text-purple-300 transition-all duration-300"​
+variants={buttonHoverVariants}​
+whileHover="hover"​
+whileTap="tap"​
+>​
+Learn More​
+</motion.button>​
+</motion.div>​
+</motion.div>​
+</div>​
+</section>​
+
+);​
+};​
+​
+export default HeroSection;​
+
+Step 7: src/components/AIBuilderPage.jsx
+
+JavaScript
+
+import React from 'react';​
+import { motion } from 'framer-motion';​
+import ParticlesBackground from './ParticlesBackground'; // Make sure this path is correct​
+
+​
+const AIBuilderPage = () => {​
+const containerVariants = {​
+hidden: { opacity: 0 },​
+visible: {​
+opacity: 1,​
+transition: {​
+staggerChildren: 0.1,​
+
+},​
+},​
+};​
+​
+const itemVariants = {​
+hidden: { y: 50, opacity: 0 },​
+visible: {​
+y: 0,​
+opacity: 1,​
+transition: {​
+type: "spring",​
+stiffness: 100,​
+damping: 15,​
+
+},​
+},​
+};​
+​
+const buttonHoverVariants = {​
+hover: { scale: 1.03, boxShadow: "0 0 15px rgba(147, 51, 234, 0.6)" },​
+tap: { scale: 0.98 },​
+
+};​
+​
+return (​
+<section id="ai-builder" className="relative min-h-screen py-20 flex flex-col items-center
+
+justify-center text-white bg-gradient-to-br from-[#0F172A] to-[#111827] overflow-hidden">​
+<ParticlesBackground />​
+​
+<div className="relative z-10 container mx-auto px-6 text-center">​
+<motion.div​
+variants={containerVariants}​
+initial="hidden"​
+whileInView="visible"​
+viewport={{ once: true, amount: 0.3 }}​
+>​
+<motion.h2​
+className="text-4xl md:text-6xl font-extrabold font-space-grotesk mb-6 leading-tight
+text-purple-400"​
+variants={itemVariants}​
+>​
+The Future of UI/UX is Here​
+</motion.h2>​
+<motion.p​
+className="text-xl md:text-2xl text-gray-300 font-inter mb-10 max-w-3xl mx-auto
+leading-relaxed"​
+variants={itemVariants}​
+>​
+Our revolutionary AI Builder translates your ideas into beautiful, functional interfaces in seconds.​
+Focus on creativity, let AI handle the mundane.​
+</motion.p>​
+​
+<motion.div​
+className="bg-[#1F2937] border border-[#374151] rounded-2xl p-4 md:p-8 mb-12 shadow-2xl
+relative"​
+variants={itemVariants}​
+>​
+{/* Example AI Builder Interface Placeholder */}​
+<div className="relative h-96 md:h-[500px] w-full bg-gray-900 rounded-xl flex items-center
+justify-center overflow-hidden border border-purple-500/50">​
+<span className="text-gray-500 text-2xl md:text-3xl font-space-grotesk">​
+AI Builder Interface Placeholder​
+</span>​
+<img​
+src="https://via.placeholder.com/1200x600?text=AI+Generated+UI+Example"​
+alt="AI Generated UI Example"​
+className="absolute inset-0 w-full h-full object-cover opacity-20"​
+/>​
+<div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent
+to-gray-900 opacity-70"></div>​
+</div>​
+​
+<motion.div​
+className="flex flex-col sm:flex-row justify-center gap-6 mt-8"​
+
+variants={itemVariants}​
+>​
+<motion.button​
+className="bg-purple-600 text-white px-8 py-4 rounded-full text-xl font-bold transition-all
+duration-300 relative group overflow-hidden"​
+variants={buttonHoverVariants}​
+whileHover="hover"​
+whileTap="tap"​
+>​
+Launch AI Studio​
+<span className="absolute inset-0 bg-gradient-to-br from-purple-400 via-purple-600
+to-purple-800 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></span>​
+</motion.button>​
+<motion.button​
+className="bg-gray-800 text-gray-200 border border-gray-700 px-8 py-4 rounded-full
+text-xl font-bold hover:border-purple-500 hover:text-purple-300 transition-all duration-300"​
+variants={buttonHoverVariants}​
+whileHover="hover"​
+whileTap="tap"​
+>​
+See Demo​
+</motion.button>​
+</motion.div>​
+</motion.div>​
+​
+<motion.p​
+className="text-lg text-gray-500 font-inter"​
+variants={itemVariants}​
+>​
+Experience lightning-fast development cycles and unparalleled creativity.​
+</motion.p>​
+</motion.div>​
+</div>​
+</section>​
+
+);​
+};​
+​
+export default AIBuilderPage;​
+
+Step 8: src/components/FeatureCardsSection.jsx
+
+JavaScript
+
+import React from 'react';​
+import { motion } from 'framer-motion';​
+import ParticlesBackground from './ParticlesBackground';​
+
+​
+// Dummy icon components for demonstration​
+const IconBrain = () => (​
+<svg​
+className="h-12 w-12 text-purple-400 mb-4"​
+fill="none"​
+viewBox="0 0 24 24"​
+stroke="currentColor"​
+strokeWidth="2"​
+>​
+<path​
+strokeLinecap="round"​
+strokeLinejoin="round"​
+d="M9 19V6l12-3v13M9 19c0 1.105-1.79 2-4 2s-4-.895-4-2 1.79-2 4-2 4 .895 4 2zm0 0V6m0 6a2 2 0
+100-4 2 2 0 000 4zm-4-4a2 2 0 100-4 2 2 0 000 4zm8 2a2 2 0 100-4 2 2 0 000 4zm-4 4a2 2 0 100-4
+2 2 0 000 4z"​
+/>​
+</svg>​
+
+);​
+​
+const IconCloud = () => (​
+<svg​
+className="h-12 w-12 text-purple-400 mb-4"​
+fill="none"​
+viewBox="0 0 24 24"​
+stroke="currentColor"​
+strokeWidth="2"​
+>​
+<path​
+strokeLinecap="round"​
+strokeLinejoin="round"​
+d="M3 15a4 4 0 004 4h9a5 5 0 00-1.002-9.998A5.002 5.002 0 0012 9V6l3 3m-9 3H4a2 2 0
+01-2-2v-4a2 2 0 012-2h10a2 2 0 012 2v4a2 2 0 01-2 2h-4"​
+/>​
+</svg>​
+
+);​
+​
+
+const IconRocket = () => (​
+<svg​
+className="h-12 w-12 text-purple-400 mb-4"​
+fill="none"​
+viewBox="0 0 24 24"​
+stroke="currentColor"​
+strokeWidth="2"​
+>​
+<path​
+strokeLinecap="round"​
+strokeLinejoin="round"​
+d="M12 21.75l-6.59-6.59C3.76 13.06 2 10.55 2 8c0-4.42 3.58-8 8-8s8 3.58 8 8c0 2.55-1.76 5.06-3.41
+6.59L12 21.75zM12 21.75V15M12 15a3 3 0 100-6 3 3 0 000 6z"​
+/>​
+</svg>​
+
+);​
+​
+const IconShield = () => (​
+<svg​
+className="h-12 w-12 text-purple-400 mb-4"​
+fill="none"​
+viewBox="0 0 24 24"​
+stroke="currentColor"​
+strokeWidth="2"​
+>​
+<path​
+strokeLinecap="round"​
+strokeLinejoin="round"​
+d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-3.132 0-6.016 1.055-8.38 2.894A1.956
+1.956 0 002 7.662v1.547c0 2.404 1.258 4.636 3.297 6.002 1.637 1.085 3.393 1.99 5.232 2.766a2.479 2.016
+0 003.546 0c1.839-.776 3.6-1.681 5.232-2.766C20.742 13.809 22 11.577 22 9.209V7.662a1.956 1.956 0
+00-1.618-1.618z"​
+/>​
+</svg>​
+
+);​
+​
+const FeatureCard = ({ icon: Icon, title, description, index }) => {​
+const cardVariants = {​
+initial: { opacity: 0, y: 50 },​
+animate: {​
+opacity: 1,​
+y: 0,​
+transition: {​
+delay: index * 0.1, // Stagger animation​
+type: "spring",​
+
+stiffness: 100,​
+damping: 15​
+
+}​
+},​
+hover: {​
+scale: 1.03, // Scale up on hover​
+boxShadow: "0 0 25px rgba(147, 51, 234, 0.7)", // Purple glow shadow​
+transition: { duration: 0.3 }​
+
+},​
+whileInView: {​
+opacity: 1,​
+y: 0,​
+transition: {​
+delay: index * 0.1,​
+type: "spring",​
+stiffness: 100,​
+damping: 15​
+
+}​
+}​
+};​
+​
+return (​
+<motion.div​
+className="bg-[#1F2937] border border-[#374151] rounded-xl p-8 text-center shadow-xl relative
+overflow-hidden group"​
+variants={cardVariants}​
+initial="initial"​
+whileInView="animate"​
+whileHover="hover"​
+viewport={{ once: true, amount: 0.3 }}​
+>​
+<div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-800/10
+to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity
+duration-300"></div>​
+<Icon />​
+<h3 className="text-2xl font-space-grotesk text-white mb-3">{title}</h3>​
+<p className="text-gray-300 font-inter leading-relaxed">{description}</p>​
+</motion.div>​
+
+);​
+};​
+​
+const FeatureCardsSection = () => {​
+const features = [​
+
+{​
+
+icon: IconBrain,​
+title: 'Intuitive AI Design',​
+description: 'Leverage powerful AI to generate stunning UI/UX designs instantly, tailored to your
+needs.',​
+
+},​
+{​
+icon: IconCloud,​
+title: 'Seamless Cloud Integration',​
+description: 'Deploy your AI-powered applications effortlessly to the cloud with built-in
+integrations.',​
+
+},​
+{​
+icon: IconRocket,​
+title: 'Rapid Prototyping',​
+description: 'Accelerate your development workflow with quick prototypes and iterative design
+cycles.',​
+
+},​
+{​
+icon: IconShield,​
+title: 'Secure & Scalable',​
+description: 'Build with confidence on a robust infrastructure designed for security and scalability.',​
+
+},​
+{​
+icon: IconBrain, // Reusing icons for example​
+title: 'Customizable Components',​
+description: 'Tailor every aspect of your generated layouts with flexible and reusable components.',​
+
+},​
+{​
+icon: IconRocket,​
+title: 'Performance Optimized',​
+description: 'Ensure your applications run at peak performance with automatically optimized code.',​
+
+},​
+];​
+​
+return (​
+<section id="features" className="relative w-full py-20 bg-[#0F172A] text-white overflow-hidden">​
+<ParticlesBackground />​
+​
+<div className="container mx-auto px-6 relative z-10">​
+<motion.h2​
+className="text-4xl md:text-5xl font-extrabold font-space-grotesk text-center mb-16
+text-purple-400"​
+initial={{ opacity: 0, y: -50 }}​
+whileInView={{ opacity: 1, y: 0 }}​
+
+viewport={{ once: true, amount: 0.3 }}​
+transition={{ duration: 0.5 }}​
+>​
+Key Features​
+</motion.h2>​
+​
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">​
+{features.map((feature, index) => (​
+<FeatureCard​
+key={feature.title}​
+icon={feature.icon}​
+title={feature.title}​
+description={feature.description}​
+index={index}​
+/>​
+))}​
+</div>​
+</div>​
+</section>​
+
+);​
+};​
+​
+export default FeatureCardsSection;​
+
+Step 9: src/components/PricingSection.jsx
+
+JavaScript
+
+import React, { useState } from 'react';​
+import { motion } from 'framer-motion';​
+import ParticlesBackground from './ParticlesBackground';​
+
+​
+const IconCheck = () => (​
+<svg​
+className="w-5 h-5 text-green-400 mr-2"​
+fill="none"​
+stroke="currentColor"​
+viewBox="0 0 24 24"​
+
+xmlns="http://www.w3.org/2000/svg"​
+>​
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>​
+</svg>​
+
+);​
+​
+const PricingCard = ({ plan, currency, isPopular, index }) => {​
+const isUSD = currency === 'USD';​
+const price = isUSD ? plan.priceUSD : plan.priceBDT;​
+const currencySymbol = isUSD ? '$' : '৳'; // Bangladeshi Taka symbol​
+
+​
+const cardVariants = {​
+initial: { opacity: 0, y: 50 },​
+animate: {​
+opacity: 1,​
+y: 0,​
+transition: {​
+delay: index * 0.15,​
+type: "spring",​
+stiffness: 100,​
+damping: 15​
+
+}​
+},​
+hover: {​
+scale: 1.05,​
+boxShadow: "0 0 35px rgba(147, 51, 234, 0.8)",​
+transition: { duration: 0.3 }​
+
+},​
+whileInView: {​
+opacity: 1,​
+y: 0,​
+transition: {​
+delay: index * 0.15,​
+type: "spring",​
+stiffness: 100,​
+damping: 15​
+
+}​
+}​
+};​
+​
+const buttonHoverVariants = {​
+hover: {​
+scale: 1.03,​
+
+boxShadow: "0 0 15px rgba(147, 51, 234, 0.6)",​
+transition: { duration: 0.3 }​
+
+}​
+};​
+​
+return (​
+<motion.div​
+className={`bg-[#1F2937] border-2 rounded-xl p-8 flex flex-col items-center text-center relative
+overflow-hidden shadow-2xl​
+${isPopular ? 'border-purple-600' : 'border-[#374151]'}`}​
+variants={cardVariants}​
+initial="initial"​
+whileInView="animate"​
+whileHover="hover"​
+viewport={{ once: true, amount: 0.3 }}​
+>​
+{isPopular && (​
+<span className="absolute top-0 right-0 bg-purple-600 text-white text-xs font-bold px-3 py-1
+rounded-bl-lg">​
+Popular​
+</span>​
+)}​
+<h3 className="text-3xl font-space-grotesk text-white mb-4">{plan.name}</h3>​
+<p className="text-gray-400 font-inter mb-6">{plan.description}</p>​
+<div className="flex items-baseline mb-8">​
+<span className="text-5xl font-extrabold font-space-grotesk text-purple-500">​
+{currencySymbol}{price}​
+</span>​
+<span className="text-lg text-gray-500 ml-2">/ month</span>​
+</div>​
+<ul className="text-gray-300 font-inter text-left space-y-3 mb-10 w-full">​
+{plan.features.map((feature, i) => (​
+<li key={i} className="flex items-start">​
+<IconCheck />​
+<span>{feature}</span>​
+</li>​
+))}​
+</ul>​
+<motion.button​
+className={`mt-auto w-full py-3 rounded-lg text-lg font-bold transition-all duration-300 relative
+group overflow-hidden​
+${isPopular​
+? 'bg-purple-600 text-white hover:bg-purple-700'​
+: 'bg-gray-700 text-gray-200 hover:bg-gray-600'​
+}`}​
+variants={buttonHoverVariants}​
+whileHover="hover"​
+
+>​
+Choose {plan.name}​
+<span className="absolute inset-0 bg-gradient-to-br from-purple-400 via-purple-600
+to-purple-800 opacity-0 group-hover:opacity-20 transition-opacity duration-500"></span>​
+</motion.button>​
+</motion.div>​
+
+);​
+};​
+​
+const PricingSection = () => {​
+const [currency, setCurrency] = useState('USD');​
+
+​
+const pricingPlans = [​
+
+{​
+name: 'Starter',​
+description: 'Perfect for individuals and small projects.',​
+priceUSD: 29,​
+priceBDT: 2999,​
+features: [​
+'5 AI Generations/month',​
+'Basic UI Components',​
+'Email Support',​
+'1 User Account',​
+
+],​
+},​
+{​
+name: 'Pro',​
+description: 'Ideal for growing teams and advanced applications.',​
+isPopular: true,​
+priceUSD: 79,​
+priceBDT: 7999,​
+features: [​
+'Unlimited AI Generations',​
+'Advanced UI Components',​
+'Priority Chat Support',​
+'5 User Accounts',​
+'Custom Themes',​
+
+],​
+},​
+{​
+name: 'Enterprise',​
+description: 'Scalable solutions for large organizations.',​
+priceUSD: 199,​
+
+priceBDT: 19999,​
+features: [​
+'All Pro Features',​
+'Dedicated Account Manager',​
+'On-demand Training',​
+'Unlimited Users',​
+'SLA & Uptime Guarantee',​
+
+],​
+},​
+];​
+​
+return (​
+<section id="pricing" className="relative w-full py-20 bg-[#0F172A] text-white overflow-hidden">​
+<ParticlesBackground />​
+​
+<div className="container mx-auto px-6 relative z-10">​
+<motion.h2​
+className="text-4xl md:text-5xl font-extrabold font-space-grotesk text-center mb-6
+text-purple-400"​
+initial={{ opacity: 0, y: -50 }}​
+whileInView={{ opacity: 1, y: 0 }}​
+viewport={{ once: true, amount: 0.3 }}​
+transition={{ duration: 0.5 }}​
+>​
+Flexible Pricing​
+</motion.h2>​
+<motion.p​
+className="text-xl text-gray-400 text-center mb-12 font-inter max-w-2xl mx-auto"​
+initial={{ opacity: 0, y: -30 }}​
+whileInView={{ opacity: 1, y: 0 }}​
+viewport={{ once: true, amount: 0.3 }}​
+transition={{ duration: 0.5, delay: 0.2 }}​
+>​
+Choose a plan that fits your needs. Scale up as your AI projects grow.​
+</motion.p>​
+​
+{/* Currency Toggle */}​
+<motion.div​
+className="flex justify-center mb-16"​
+initial={{ opacity: 0, y: 30 }}​
+whileInView={{ opacity: 1, y: 0 }}​
+viewport={{ once: true, amount: 0.3 }}​
+transition={{ duration: 0.5, delay: 0.4 }}​
+>​
+<div className="relative inline-flex bg-[#1F2937] rounded-lg p-1 border border-[#374151]">​
+<button​
+
+className={`px-6 py-2 rounded-md font-bold text-lg transition-colors duration-200​
+${currency === 'USD' ? 'bg-purple-600 text-white' : 'text-gray-400
+hover:text-purple-300'}`}​
+onClick={() => setCurrency('USD')}​
+>​
+USD ($)​
+</button>​
+<button​
+className={`px-6 py-2 rounded-md font-bold text-lg transition-colors duration-200​
+${currency === 'BDT' ? 'bg-purple-600 text-white' : 'text-gray-400
+hover:text-purple-300'}`}​
+onClick={() => setCurrency('BDT')}​
+>​
+BDT (৳)​
+</button>​
+</div>​
+</motion.div>​
+​
+​
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">​
+{pricingPlans.map((plan, index) => (​
+<PricingCard​
+key={plan.name}​
+plan={plan}​
+currency={currency}​
+isPopular={plan.isPopular}​
+index={index}​
+/>​
+))}​
+</div>​
+</div>​
+</section>​
+
+);​
+};​
+​
+export default PricingSection;​
+
+Step 10: src/components/TestimonialsSection.jsx
+
+JavaScript
+
+import React from 'react';​
+import { motion } from 'framer-motion';​
+import ParticlesBackground from './ParticlesBackground';​
+
+​
+const StarIcon = ({ filled }) => (​
+<svg​
+className={`w-5 h-5 ${filled ? 'text-yellow-400' : 'text-gray-600'}`}​
+fill="currentColor"​
+viewBox="0 0 20 20"​
+>​
+<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371
+1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0
+00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98
+8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />​
+</svg>​
+
+);​
+​
+const TestimonialCard = ({ testimonial, index }) => {​
+const cardVariants = {​
+initial: { opacity: 0, y: 50 },​
+animate: {​
+opacity: 1,​
+y: 0,​
+transition: {​
+delay: index * 0.15,​
+type: "spring",​
+stiffness: 100,​
+damping: 15​
+
+}​
+},​
+hover: {​
+scale: 1.03,​
+boxShadow: "0 0 25px rgba(147, 51, 234, 0.7)",​
+transition: { duration: 0.3 }​
+
+},​
+whileInView: {​
+opacity: 1,​
+y: 0,​
+transition: {​
+delay: index * 0.15,​
+type: "spring",​
+
+stiffness: 100,​
+damping: 15​
+
+}​
+}​
+};​
+​
+return (​
+<motion.div​
+className="bg-[#1F2937] border border-[#374151] rounded-xl p-8 shadow-xl flex flex-col
+justify-between relative overflow-hidden group"​
+variants={cardVariants}​
+initial="initial"​
+whileInView="animate"​
+whileHover="hover"​
+viewport={{ once: true, amount: 0.3 }}​
+>​
+<div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-800/10
+to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity
+duration-300"></div>​
+​
+<div className="flex mb-4 justify-center sm:justify-start">​
+{[...Array(5)].map((_, i) => (​
+<StarIcon key={i} filled={i < testimonial.rating} />​
+))}​
+</div>​
+​
+<p className="text-gray-300 font-inter text-lg leading-relaxed mb-6 italic before:content-['“']
+before:text-purple-400 before:text-4xl before:mr-1 after:content-['”'] after:text-purple-400
+after:text-4xl after:ml-1">​
+{testimonial.quote}​
+</p>​
+​
+<div className="flex items-center mt-auto">​
+<img​
+src={testimonial.avatar}​
+alt={testimonial.name}​
+className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-purple-500"​
+/>​
+<div>​
+<p className="font-space-grotesk text-white font-semibold text-lg">{testimonial.name}</p>​
+<p className="font-inter text-gray-400 text-sm">{testimonial.title}</p>​
+</div>​
+</div>​
+</motion.div>​
+
+);​
+};​
+
+​
+const TestimonialsSection = () => {​
+const testimonials = [​
+
+{​
+id: 1,​
+quote: "eT's AI Builder has revolutionized our design process. The speed and quality of generated
+layouts are simply astonishing. It's an indispensable tool!",​
+name: 'Sarah Chen',​
+title: 'Lead Product Designer @ InnovateTech',​
+rating: 5,​
+avatar: 'https://randomuser.me/api/portraits/women/32.jpg',​
+
+},​
+{​
+id: 2,​
+quote: "We've cut down our prototyping time by 50% since using eT's AI. The intelligent
+suggestions and customizable components are a game-changer.",​
+name: 'Michael Wong',​
+title: 'CTO @ NextGen Solutions',​
+rating: 4,​
+avatar: 'https://randomuser.me/api/portraits/men/44.jpg',​
+
+},​
+{​
+id: 3,​
+quote: "The interface is intuitive, and the results are consistently impressive. Our clients are always
+amazed by how quickly we can bring their visions to life.",​
+name: 'Jessica Lee',​
+title: 'Creative Director @ Visionary Studios',​
+rating: 5,​
+avatar: 'https://randomuser.me/api/portraits/women/68.jpg',​
+
+},​
+{​
+id: 4,​
+quote: "As a freelancer, this tool helps me deliver high-quality designs faster, allowing me to take on
+more projects and satisfy more clients.",​
+name: 'David Kim',​
+title: 'Freelance UI/UX Designer',​
+rating: 4,​
+avatar: 'https://randomuser.me/api/portraits/men/70.jpg',​
+
+},​
+{​
+id: 5,​
+quote: "The scalability and integration options are top-notch. It fits perfectly into our existing
+workflow and significantly boosts our team's productivity.",​
+
+name: 'Emily Johnson',​
+title: 'VP Engineering @ Global Innovations',​
+rating: 5,​
+avatar: 'https://randomuser.me/api/portraits/women/80.jpg',​
+
+},​
+{​
+id: 6,​
+quote: "Initially skeptical, but eT's AI Builder exceeded all expectations. It truly understands design
+principles and applies them intelligently.",​
+name: 'Chris Green',​
+title: 'Senior Developer @ TechCore',​
+rating: 4,​
+avatar: 'https://randomuser.me/api/portraits/men/82.jpg',​
+
+},​
+];​
+​
+return (​
+<section id="testimonials" className="relative w-full py-20 bg-[#0F172A] text-white
+overflow-hidden">​
+<ParticlesBackground />​
+​
+<div className="container mx-auto px-6 relative z-10">​
+<motion.h2​
+className="text-4xl md:text-5xl font-extrabold font-space-grotesk text-center mb-6
+text-purple-400"​
+initial={{ opacity: 0, y: -50 }}​
+whileInView={{ opacity: 1, y: 0 }}​
+viewport={{ once: true, amount: 0.3 }}​
+transition={{ duration: 0.5 }}​
+>​
+What Our Users Say​
+</motion.h2>​
+<motion.p​
+className="text-xl text-gray-400 text-center mb-16 font-inter max-w-2xl mx-auto"​
+initial={{ opacity: 0, y: -30 }}​
+whileInView={{ opacity: 1, y: 0 }}​
+viewport={{ once: true, amount: 0.3 }}​
+transition={{ duration: 0.5, delay: 0.2 }}​
+>​
+Hear directly from professionals who are transforming their design and development with our AI.​
+</motion.p>​
+​
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">​
+{testimonials.map((testimonial, index) => (​
+<TestimonialCard key={testimonial.id} testimonial={testimonial} index={index} />​
+))}​
+
+</div>​
+</div>​
+</section>​
+
+);​
+};​
+​
+export default TestimonialsSection;​
+
+Step 11: src/components/Footer.jsx
+
+JavaScript
+
+import React from 'react';​
+import { motion } from 'framer-motion';​
+import ParticlesBackground from './ParticlesBackground';​
+
+​
+const IconTwitter = () => (​
+<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">​
+<path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.007-.532A8.318 8.318 0
+0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0
+00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.107 4.107 0 001.27 5.477A4.072 4.072 0 012
+10.72v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233
+8.233 0 012 18.188a11.644 11.644 0 0010.65 6.205c12.112 0 18.701-10.037 18.701-18.701
+0-.354-.012-.707-.026-1.057A13.43 13.43 0 0024 2.559z" />​
+</svg>​
+
+);​
+const IconGithub = () => (​
+<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">​
+<path​
+fillRule="evenodd"​
+d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.83 9.504.475.083.677-.217.677-.482
+0-.23-.007-.866-.012-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.6
+2.069-.608.069-.608 1.004.072 1.53 1.03 1.53 1.03.89 1.529 2.34 1.085
+2.91.823.092-.647.35-1.085.637-1.334-2.22-.253-4.555-1.113-4.555-4.953 0-1.096.39-1.988
+1.029-2.68a4.322 4.322 0 01.096-2.671s.841-.269 2.75 1.026c.79-.228 1.63-.342 2.47-.346 0
+0-.2-.047-.4-.092a4.316 4.316 0 012.47.346c1.909-1.295 2.747-1.026 2.747-1.026.126.314.168.802.168
+1.396 0 .762-.2 1.6-.58 2.222.64.693 1.029 1.585 1.029 2.68 0 3.848-2.338 4.69-4.562
+
+4.947.359.31.678.922.678 1.855 0 1.334-.012 2.41-.012 2.74 0 .265.203.565.683.483C19.136 20.183 22
+16.425 22 12.017 22 6.484 17.522 2 12 2z"​
+clipRule="evenodd"​
+/>​
+</svg>​
+
+);​
+const IconLinkedin = () => (​
+<svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">​
+<path d="M0 0h24v24H0V0z" fill="none" />​
+<path d="M19 0H5c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24
+5-5V5c0-2.76-2.24-5-5-5zm-5.74 16.27h-2.91v-7.29h2.91v7.29zm-1.45-8.4c-.95
+0-1.72-.77-1.72-1.72s.77-1.72 1.72-1.72 1.72.77 1.72 1.72-.77 1.72-1.72 1.72zM20
+16.27h-2.91V11c0-1.3-.47-2.18-1.63-2.18-1.28 0-2.03.87-2.37
+1.71-.12.3-.12.56-.12.83v5.91H10.1V8.98h2.61l.12 1.34h.08c.37-.62 1.12-1.5 2.47-1.5 1.78 0 3.12 1.17 3.12
+3.7V16.27z" />​
+</svg>​
+
+);​
+​
+const Footer = () => {​
+const containerVariants = {​
+hidden: { opacity: 0, y: 50 },​
+visible: {​
+opacity: 1,​
+y: 0,​
+transition: {​
+delay: 0.2,​
+type: "spring",​
+stiffness: 100,​
+damping: 15​
+
+}​
+}​
+};​
+​
+const linkVariants = {​
+hover: { scale: 1.1, color: "#a78bfa", transition: { duration: 0.2 } },​
+tap: { scale: 0.95 }​
+
+};​
+​
+return (​
+<motion.footer​
+className="relative w-full py-12 bg-[#1A202C] text-gray-300 overflow-hidden border-t
+border-[#374151]"​
+initial="hidden"​
+whileInView="visible"​
+
+viewport={{ once: true, amount: 0.3 }}​
+variants={containerVariants}​
+>​
+<ParticlesBackground />​
+​
+<div className="container mx-auto px-6 relative z-10 text-center md:text-left">​
+<div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">​
+<div className="col-span-1 md:col-span-2">​
+<h3 className="text-3xl font-space-grotesk text-purple-400 font-bold mb-4">eT Builder</h3>​
+<p className="text-gray-400 font-inter leading-relaxed max-w-sm md:mx-0 mx-auto">​
+Revolutionizing design and development with intelligent AI-powered solutions.​
+</p>​
+<div className="flex justify-center md:justify-start space-x-6 mt-6">​
+<motion.a href="#" variants={linkVariants} whileHover="hover" whileTap="tap"
+aria-label="Twitter">​
+<IconTwitter />​
+</motion.a>​
+<motion.a href="#" variants={linkVariants} whileHover="hover" whileTap="tap"
+aria-label="GitHub">​
+<IconGithub />​
+</motion.a>​
+<motion.a href="#" variants={linkVariants} whileHover="hover" whileTap="tap"
+aria-label="LinkedIn">​
+<IconLinkedin />​
+</motion.a>​
+</div>​
+</div>​
+​
+<div>​
+<h4 className="text-xl font-space-grotesk text-white font-semibold mb-4">Quick Links</h4>​
+<ul className="space-y-2">​
+<li>​
+<motion.a href="#features" className="font-inter text-gray-400 hover:text-purple-300
+transition-colors" variants={linkVariants} whileHover="hover" whileTap="tap">​
+Features​
+</motion.a>​
+</li>​
+<li>​
+<motion.a href="#pricing" className="font-inter text-gray-400 hover:text-purple-300
+transition-colors" variants={linkVariants} whileHover="hover" whileTap="tap">​
+Pricing​
+</motion.a>​
+</li>​
+<li>​
+<motion.a href="#testimonials" className="font-inter text-gray-400 hover:text-purple-300
+transition-colors" variants={linkVariants} whileHover="hover" whileTap="tap">​
+Testimonials​
+</motion.a>​
+
+</li>​
+<li>​
+<motion.a href="#ai-builder" className="font-inter text-gray-400 hover:text-purple-300
+transition-colors" variants={linkVariants} whileHover="hover" whileTap="tap">​
+AI Builder​
+</motion.a>​
+</li>​
+</ul>​
+</div>​
+​
+<div>​
+<h4 className="text-xl font-space-grotesk text-white font-semibold mb-4">Resources</h4>​
+<ul className="space-y-2">​
+<li>​
+<motion.a href="#" className="font-inter text-gray-400 hover:text-purple-300
+transition-colors" variants={linkVariants} whileHover="hover" whileTap="tap">​
+Documentation​
+</motion.a>​
+</li>​
+<li>​
+<motion.a href="#" className="font-inter text-gray-400 hover:text-purple-300
+transition-colors" variants={linkVariants} whileHover="hover" whileTap="tap">​
+Support Center​
+</motion.a>​
+</li>​
+<li>​
+<motion.a href="#" className="font-inter text-gray-400 hover:text-purple-300
+transition-colors" variants={linkVariants} whileHover="hover" whileTap="tap">​
+API Reference​
+</motion.a>​
+</li>​
+<li>​
+<motion.a href="#" className="font-inter text-gray-400 hover:text-purple-300
+transition-colors" variants={linkVariants} whileHover="hover" whileTap="tap">​
+Terms of Service​
+</motion.a>​
+</li>​
+</ul>​
+</div>​
+</div>​
+​
+<hr className="border-t border-[#374151] mb-8" />​
+​
+<div className="text-center text-gray-500 font-inter text-sm">​
+© {new Date().getFullYear()} eT Builder. All rights reserved.​
+</div>​
+</div>​
+</motion.footer>​
+
+);​
+};​
+​
+export default Footer;​
+
+Step 12: src/App.jsx (Main application file)
+
+JavaScript
+
+import React from 'react';​
+import Header from './components/Header';​
+import HeroSection from './components/HeroSection';​
+import FeatureCardsSection from './components/FeatureCardsSection';​
+import AIBuilderPage from './components/AIBuilderPage';​
+import PricingSection from './components/PricingSection';​
+import TestimonialsSection from './components/TestimonialsSection';​
+import Footer from './components/Footer';​
+
+​
+function App() {​
+return (​
+<div className="relative bg-[#0F172A] min-h-screen">​
+<Header />​
+<main>​
+<HeroSection />​
+<FeatureCardsSection />​
+<AIBuilderPage />​
+<PricingSection />​
+<TestimonialsSection />​
+</main>​
+<Footer />​
+</div>​
+
+);​
+}​
+​
+export default App;​
+
+
